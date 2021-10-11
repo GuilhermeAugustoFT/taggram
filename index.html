@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Taggram</title>
+
+    <!-- O normalize ajuda a reduzir a diferença de estilo entre os navegadores -->
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css" />
+    <!--  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="styles/header.css">
+    <link rel="stylesheet" type="text/css" href="styles/post.css">
+    <link rel="stylesheet" type="text/css" href="styles/related.css">
+
+  <!-- Scripts -->
+    <script src="scripts/index.js"></script>
+  </head>
+
+  <body class="body">
+    <header class="header">
+      <div class="header__container">
+        <img src="../assets/images/Taggram-logo.png" alt="logo" class="logo">
+        <div class="current-user">
+          <div class="current-user__username" id="current-user-username"></div>
+          <div class="current-user__avatar" id="current-user-avatar"></div>
+        </div> 
+      </div>
+    </header> 
+
+    <div class="post__container">
+      <div class="post">
+        <div class="post__image__container">
+          <img src="" alt="" class="post__image" id="post-image">
+      </div>
+      <div class="comments__container">
+          <div class="who__posted__container">
+              <div class="who__posted">
+                  <div class="who__posted__avatar" id="who-posted-avatar"></div>
+                  <div class="who__posted__info">
+                      <p class="user__name" id="who-posted-username"></p>
+                      <p class="location" id="who-posted-location"></p>
+                  </div>
+              </div>                
+          </div>    
+          
+
+            <div class="comments__list" id="comments-list"> <!-- cada usuário -->
+              
+            </div>    
+
+            <div class="post__info__container">
+              <p class="comments__number" id="comments-number"></p>
+              <p class="created_at" id="created-at"></p>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+
+    <div class="divisor__container">
+      <div class="divisor"></div>
+      <div class="divisor__text__container">
+        <p class="divisor__text">Mais publicações</p>
+      </div>
+    </div>
+    
+     
+   
+   
+
+    <div class="related__container">
+      <div class="posts__container" id="posts-container">
+        <div class="related__post"></div>
+        <div class="related__post"></div>
+        <div class="related__post"></div>
+        <div class="related__post"></div>
+      </div>     
+    </div>
+
+    <div class="footer">          
+      <a href="https://www.tagview.com.br/"  target="_blank"><img class="tagview__logo" src="/assets/images/tagviewLogo.png"></img></a>
+    </div>
+
+  </body>
+</html>
