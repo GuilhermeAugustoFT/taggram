@@ -62,10 +62,10 @@ function changePost(post){
        </div>
        <div class="comment__footer">
          <p class="commented__at">${postedAt}</p>
-         <p class="likes" id="likes-number">${likesText}</p>
+         <p class="likes" id="likes-number${i}">${likesText}</p>
        </div>                  
      </div>
-     <i class="heart__icon material-icons" id="heart-icon">favorite_border</i>
+     <i class="heart__icon material-icons" id="heart-icon" onclick="likeIconClick(this, ${i}) ">favorite_border</i>
  </div>`;
  }
  $commentsList.innerHTML = commentsHTML;
@@ -108,6 +108,25 @@ function convertDate(date){
   return postedAt;  
 }
 
+function likeIconClick(element, index){
+  if(element.innerHTML == 'favorite_border')
+  {
+    element.innerHTML = 'favorite';
+    element.style.color = 'red';
+    const $likesNumber = document.getElementById('likes-number' + index);
+    $likesNumber.innerHTML = '1 curtida';
+    likeComment();
+  }
+  else{
+    element.innerHTML = 'favorite_border';
+    element.style.color = 'black';
+    const $likesNumber = document.getElementById('likes-number' + index);
+    $likesNumber.innerHTML = '';
+    unlikeComment();
+  }
+    
+}
+
 (function(apiUrl) {
 
   function getMe() {
@@ -142,7 +161,24 @@ function convertDate(date){
     .then(function(related) {
       changeRelated(related);
     });
-}
+  }
+
+    
+  function likeComment(commentId){
+    return fetch (apiUrl + "/comments/" + commentId + "/like")
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(updatedComment) {
+      console.log(updatedComment)
+    });
+  }
+
+
+  function unlikeComment(commentId){
+    console.log('unlike');
+  
+  }
 
   function initialize() {
     getMe();
