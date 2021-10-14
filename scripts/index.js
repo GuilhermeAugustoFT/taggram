@@ -152,28 +152,56 @@ function changeUser(){
     }
   }
 
+ 
+
 const getMe = () => {
     axios.get(apiUrl + '/me').then(response => {
+      if(response.status == 200){
         currentUser = response.data;
         changeUser();
 
-        getPost();
+        getPost(); 
+      }
+      else{
+        window.alert('Não foi possível carregar a página!\nTente novamente mais tarde...');
+      }
     });
 }
 
 const getPost = () => {
     axios.get(apiUrl + "/post?username=" + currentUser.username).then(response => {
+      if(response.status == 200)
+      {
         post = response.data;
         changePost();
         
-        getRelated();        
+        getRelated();   
+      }
+      else{
+        if(response.status == 404)        
+          window.alert('Não foi possível carregar a publição!\nTente novamente mais tarde...');
+        else if(response.status == 400)
+          window.alert('Usuário logado não existe!\nEntre com outra conta.');
+        else
+          window.alert('Não foi possível carregar a página!\nTente novamente mais tarde...');
+      }
+             
     });
 }
 
 const getRelated = () => {
     axios.get(apiUrl + "/posts/" + post.uuid + "/related").then(response => {
-      related = response.data;
-      changeRelated();      
+      if(response.status == 200)
+      {
+        related = response.data;
+        changeRelated();     
+      }
+      else{
+        if(response.status == 404)        
+          window.alert('Não foi possível carregar a publição!\nTente novamente mais tarde...');
+        else
+          window.alert('Não foi possível carregar a página!\nTente novamente mais tarde...');
+      }
     });
 }
 
@@ -184,11 +212,12 @@ const likeUnlikeComment = (commentId, heartIcon, commentIndex, action) => {
       comments[commentIndex] = response.data;
       changeCommentInfo(commentIndex, heartIcon, action);
     }
-  }).catch(err => {
-    if(err != 200)
-        window.alert('Não foi possível ' + (action == 'like' ? 'curtir' : 'descurtir') +
-        ' a publicação!\nTente novamente mais tarde.');
-});
+    else if(response.status == 200)
+      window.alert('Não foi possível ' + (action == 'like' ? 'curtir' : 'descurtir') +
+    ' a publicação!\nTente novamente mais tarde.');
+    else if(response.status == 400)
+      window.alert('Esse comentário não está disponivel no momento!\nTente novamente mais tarde...');
+  });
 }
 
 
