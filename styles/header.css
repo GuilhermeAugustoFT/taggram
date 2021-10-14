@@ -29,7 +29,7 @@
     height: 22px;
     width: 22px;
     background-color: #DBDBDB;
-    background-image: url('/assets/images/NoPhoto.jpg');
+    background-image: url('assets/images/NoPhoto.jpg');
     border-radius: 50%;
     background-repeat: no-repeat;
     background-size: contain;

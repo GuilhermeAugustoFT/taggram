@@ -17,6 +17,9 @@
   .post__image{
     width: 598px;
     height: 598px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
   }
 
   /*COMMENTS*/
@@ -48,7 +51,7 @@
     height: 32px;
     width: 32px;
     background-color: #DBDBDB;
-    background-image: url('/assets/images/NoPhoto.jpg');
+    background-image: url('assets/images/NoPhoto.jpg');
 
     border-radius: 50%;
     background-repeat: no-repeat;
@@ -108,7 +111,7 @@
     height: 32px;
     width: 32px;
     background-color: #DBDBDB;
-    background-image: url('/assets/images/NoPhoto.jpg');
+    background-image: url('assets/images/NoPhoto.jpg');
     border-radius: 50%;
     background-repeat: no-repeat;
     background-size: contain;

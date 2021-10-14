@@ -2,19 +2,20 @@ const apiUrl = "https://taggram.herokuapp.com";
 
 var currentUser;
 var comments = [];
+var post;
+var related = [];
 
-function changeUser(username, avatar){
+function changeUser(){
     const $username = document.getElementById("current-user-username");
     const $avatar = document.getElementById("current-user-avatar");
-    currentUser = username;
-    $username.innerHTML = username;
-    if (avatar) {
-      $avatar.style.backgroundImage = "url('" + avatar + "')";
+    $username.innerHTML = currentUser.username;
+    if (currentUser.avatar) {
+      $avatar.style.backgroundImage = "url('" + currentUser.avatar + "')";
     }
   } 
 
   
-  function changePost(post){
+  function changePost(){
     const $postImage = document.getElementById("post-image");
     const $userAvatar = document.getElementById("who-posted-avatar")
     const $username = document.getElementById("who-posted-username")
@@ -39,13 +40,15 @@ function changeUser(username, avatar){
     var avatar;
     var postedAt;
     var likesText = "";
+    
+    console.log(comments);  
    
     for(let i = 0; i < comments.length; i++)
     {        
       if(comments[i].user.avatar)
         avatar = comments[i].user.avatar;
       else
-        avatar = "/assets/images/NoPhoto.jpg";
+        avatar = "assets/images/NoPhoto.jpg";
   
       if(comments[i].created_at.length == 24){
         // seleção da diferença de horários
@@ -55,6 +58,8 @@ function changeUser(username, avatar){
       else 
         postedAt = comments[i].created_at;
   
+        
+      likesText = "";
     if(comments[i].like_count > 0)
     {
       likesText = comments[i].like_count + (comments[i].like_count > 1 || comments[i].like_count == 0  ? ' curtidas' : ' curtida');
@@ -77,7 +82,7 @@ function changeUser(username, avatar){
    $commentsList.innerHTML = commentsHTML;
   }
   
-  function changeRelated(related){
+  function changeRelated(){
     var relatedPostsHTML = "";
         
   
@@ -114,14 +119,15 @@ function changeUser(username, avatar){
     return postedAt;  
   }
 
-  function changeCommentInfo(comment, element, index){
+  function changeCommentInfo(index, element){
+    console.log(comments);
     if(element.innerHTML == 'favorite_border')
     {
       element.innerHTML = 'favorite';
       element.style.color = 'red';
       const $likesNumber = document.getElementById('likes-number' + index);
       
-     $likesNumber.innerHTML = comment.like_count == 1 ? comment.like_count + ' curtida' : comment.like_count + ' curtidas';
+      $likesNumber.innerHTML = comments[index].like_count == 1 ? comments[index].like_count + ' curtida' : comments[index].like_count + ' curtidas';
         
     }
     else{
@@ -130,8 +136,8 @@ function changeUser(username, avatar){
       const $likesNumber = document.getElementById('likes-number' + index);
 
       $likesNumber.innerHTML = '';
-      if(comment.like_count > 0)
-        $likesNumber.innerHTML = comment.like_count == 1 ? comment.like_count + ' curtida' : comment.like_count + ' curtidas';
+      if(comments[index].like_count > 0)
+        $likesNumber.innerHTML = comments[index].like_count == 1 ? comments[index].like_count + ' curtida' : comments[index].like_count + ' curtidas';
     }
   } 
   
@@ -139,57 +145,50 @@ function changeUser(username, avatar){
     var commentId = comments[index].uuid;
     if(element.innerHTML == 'favorite_border')
     {
-      likeComment(commentId, element, index);
+      likeUnlikeComment(commentId, element, index, 'like');
     }
     else{
-      unlikeComment(commentId, element, index);
+      likeUnlikeComment(commentId, element, index, 'unlike');
     }
   }
 
 const getMe = () => {
     axios.get(apiUrl + '/me').then(response => {
-        changeUser(response.data.username, response.data.avatar);
+        currentUser = response.data;
+        changeUser();
 
-        getPost(response.data.username);
+        getPost();
     });
 }
 
-const getPost = (username) => {
-    axios.get(apiUrl + "/post?username=" + username).then(response => {
-        changePost(response.data);
+const getPost = () => {
+    axios.get(apiUrl + "/post?username=" + currentUser.username).then(response => {
+        post = response.data;
+        changePost();
         
-        getRelated(response.data.uuid);        
+        getRelated();        
     });
 }
 
-const getRelated = (postId) => {
-    axios.get(apiUrl + "/posts/" + postId + "/related").then(response => {
-        
-      changeRelated(response.data);      
+const getRelated = () => {
+    axios.get(apiUrl + "/posts/" + post.uuid + "/related").then(response => {
+      related = response.data;
+      changeRelated();      
     });
 }
 
-const likeComment = (commentId, heartIcon, commentIndex) => {
-    axios.post(apiUrl + '/comments/' + commentId + '/like', {username : currentUser}).then(response => {
-        if(response.status == 200)
-            changeCommentInfo(response.data, heartIcon,commentIndex);
-    }).catch(err => {
-        console.log('Errooooo: ' + err);
-        if(err != 200)
-            window.alert('Não foi possível descurtir a publicação!\nTente novamente mais tarde.');
-    });
-}
-
-const unlikeComment = (commentId, heartIcon, commentIndex) => {
-    axios.post(apiUrl + '/comments/' + commentId + '/unlike', {username : currentUser}).then(response => {
-        if(response.status == 200)
-            changeCommentInfo(response.data, heartIcon, commentIndex);            
-    }).catch(err => {
-        
-        // console.log('Errooooo: ' + err);
-        if(err != 200)
-            window.alert('Não foi possível descurtir a publicação!\nTente novamente mais tarde.');
-    });
+const likeUnlikeComment = (commentId, heartIcon, commentIndex, action) => {
+  axios.post(apiUrl + "/comments/" + commentId + '/' + action, {username: currentUser.username}).then(response => {
+    if(response.status == 200)
+    {
+      comments[commentIndex] = response.data;
+      changeCommentInfo(commentIndex, heartIcon, action);
+    }
+  }).catch(err => {
+    if(err != 200)
+        window.alert('Não foi possível ' + (action == 'like' ? 'curtir' : 'descurtir') +
+        ' a publicação!\nTente novamente mais tarde.');
+});
 }
 
 
